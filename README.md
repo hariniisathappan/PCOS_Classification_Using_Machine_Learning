@@ -567,10 +567,10 @@ Run notebooks in this order for full reproducibility:
 
 ## 👩‍💻 Author
 
-**Harinii S** — School of Chemical and Biotechnology, Division of Bioinformatics, SASTRA Deemed to be University, Thanjavur
--B.Tech-Bioinformatics (Hons), Minor Specialization in AI/ML.
----
+**Harinii S** — School of Chemical and Biotechnology, Division of Bioinformatics, SASTRA Deemed to be University, Thanjavur  
+*B.Tech Bioinformatics (Hons), Minor Specialization in AI/ML*
 
+---
 ## 📄 License
 
 This project is licensed under the MIT License.
