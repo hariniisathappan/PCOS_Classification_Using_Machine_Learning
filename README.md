@@ -76,6 +76,7 @@ flowchart TD
 ---
 
 ## 📁 Repository Structure
+```
 PCOS_Classification_Using_ML/
 │
 ├── data/ # Raw and processed datasets
@@ -94,9 +95,7 @@ PCOS_Classification_Using_ML/
 ├── requirements.txt
 ├── .gitignore
 └── README.md
-
-*(`outputs/` is generated locally when you run the notebooks — see .gitignore)*
-
+```
 ---
 
 ## 🧬 Dataset Description & Exploratory Analysis (Notebook 01)
@@ -485,32 +484,9 @@ Derived by comparing model behavior across all 4 conditions (Baseline/Tuned × W
 | **2. Structural Rigidity** | Gaussian Naïve Bayes, KNN | Modest FE gains; Bayesian tuning often *underperforms* defaults |
 | **3. Algorithmic Robustness** | XGBoost, Gradient Boosting | Built-in regularization makes them largely insensitive to FE |
 | **4. Default Optimality** | AdaBoost, Random Forest, Bagging, Stacking ML | Internal per-node/per-estimator feature selection makes external FE largely redundant |
-
-```mermaid
-quadrantChart
-    title Four Archetype Framework
-    x-axis Low FE Sensitivity --> High FE Sensitivity
-    y-axis Low Tuning Sensitivity --> High Tuning Sensitivity
-    quadrant-1 Archetype 1 Bimodal Sensitivity
-    quadrant-2 Archetype 3 Algorithmic Robustness
-    quadrant-3 Archetype 2 Structural Rigidity
-    quadrant-4 Archetype 4 Default Optimality
-    SVM: [0.85, 0.85]
-    Perceptron: [0.9, 0.6]
-    LDA: [0.6, 0.5]
-    QDA: [0.75, 0.4]
-    Decision Tree: [0.6, 0.3]
-    Gaussian NB: [0.2, 0.15]
-    KNN: [0.2, 0.2]
-    XGBoost: [0.15, 0.7]
-    Gradient Boosting: [0.15, 0.65]
-    AdaBoost: [0.1, 0.2]
-    Random Forest: [0.1, 0.15]
-    Bagging: [0.15, 0.25]
-    Stacking ML: [0.15, 0.25]
-    Logistic Regression: [0.3, 0.9]
-```
-
+<p align="center">
+  <img width="770" height="463" alt="Image" src="https://github.com/user-attachments/assets/84dcaea5-ef70-4d82-92b6-8bdfe8dd7723" />
+</p>
 ---
 
 ## 🔍 Explainability & Diagnostics
