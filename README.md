@@ -14,15 +14,13 @@ Polycystic Ovary Syndrome (**PCOS**) is the most common endocrine disorder in wo
 
 This repository documents an end-to-end ML pipeline for PCOS prediction on a **541-patient clinical dataset (41 raw features)**, evaluating **14 classifiers across 9 algorithm families** under **4 experimental conditions**: Baseline vs. Bayesian-Tuned, each With vs. Without Feature Engineering.
 
-> **Note:** The `outputs/` folder (raw per-model artifacts — hundreds of files) is intentionally excluded from this repo to keep it lightweight. Every key chart, table, and metric is reproduced directly in this README instead.
-
 ---
 
 ## 🗂️ Notebook Pipeline (Actual Execution Order)
 
 ```mermaid
 flowchart TD
-    N1[01_data_exploration.ipynb<br/>EDA on 541-patient, 41-feature dataset] --> N2
+    N1[01_data_exploration.ipynb<br/>EDA on 541-patient, 44-feature dataset] --> N2
 
     N2[02_preprocessing_pipeline.ipynb<br/>Imputation, Outlier Capping, Encoding,<br/>Scaling, Class-weighting] --> N7
 
@@ -530,6 +528,15 @@ Applied to the best-performing tuned models to move beyond black-box classificat
 </p>
 <p align="center">
   <img src="https://github.com/user-attachments/assets/c27880cd-8051-42dc-9a5f-1f36ddd32f47" width="900" alt="Decision Curve Analysis - Clinical Net Diagnostic Utility"/>
+</p>
+<p align="center">
+  <img width="1179" height="944" alt="Image" src="https://github.com/user-attachments/assets/467359d1-8c04-407d-abcf-8114c7bada4f" />
+</p>
+<p align="center">
+ <img width="1028" height="694" alt="Image" src="https://github.com/user-attachments/assets/92929d07-0bcd-42d6-b3c5-ad928c03efc2" />
+</p>
+<p align="center">
+   <img width="1140" height="796" alt="Image" src="https://github.com/user-attachments/assets/8e940284-b3bc-4bc9-8418-35a971603315" />
 </p>
 
 ---
