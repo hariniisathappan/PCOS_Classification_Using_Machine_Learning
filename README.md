@@ -62,7 +62,7 @@ flowchart TD
 | Aspect | Detail |
 |---|---|
 | Dataset size | 541 patients (364 negative, 177 positive) — 67.3% / 32.7% class split |
-| **Raw features** | **41** clinical, hormonal, anthropometric & ultrasound variables |
+| **Raw features** | **44** clinical, hormonal, anthropometric & ultrasound variables |
 | Engineered features | 7 clinically derived (Rotterdam-based) |
 | Final selected features | 11 (10 raw + 1 engineered, via 3-method voting) |
 | EPV improvement | 4.31 → 16.09 (satisfies EPV ≥ 10 clinical validity threshold) |
