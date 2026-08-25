@@ -486,7 +486,7 @@ Derived by comparing model behavior across all 4 conditions (Baseline/Tuned × W
 | **3. Algorithmic Robustness** | XGBoost, Gradient Boosting | Built-in regularization makes them largely insensitive to FE |
 | **4. Default Optimality** | AdaBoost, Random Forest, Bagging, Stacking ML | Internal per-node/per-estimator feature selection makes external FE largely redundant |
 <p align="center">
-  <img width="770" height="463" alt="Image" src="https://github.com/user-attachments/assets/84dcaea5-ef70-4d82-92b6-8bdfe8dd7723" />
+  <img width="731" height="487" alt="Image" src="https://github.com/user-attachments/assets/725e963c-a3ea-4d60-8c46-70158002b0b7" />
 </p>
 ---
 
