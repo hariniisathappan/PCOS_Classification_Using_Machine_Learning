@@ -2,9 +2,8 @@
 
 **A Systematic Study of Feature Engineering, Feature Selection, and Bayesian Hyperparameter Optimization for Polycystic Ovary Syndrome (PCOS) Prediction**
 
-![Status](https://img.shields.io/badge/status-research--complete-brightgreen)
+
 ![Python](https://img.shields.io/badge/python-3.9%2B-blue)
-![License](https://img.shields.io/badge/license-MIT-lightgrey)
 ![Models](https://img.shields.io/badge/models-14%20classifiers-orange)
 
 ---
@@ -23,7 +22,7 @@ This is the real, end-to-end workflow exactly as implemented in `/notebooks`:
 
 ```mermaid
 flowchart TD
-    N1[01_data_exploration.ipynb<br/>EDA on 541-patient, 41-feature dataset] --> N2
+    N1[01_data_exploration.ipynb<br/>EDA on 541-patient, 44-feature dataset] --> N2
 
     N2[02_preprocessing_pipeline.ipynb<br/>Imputation, Outlier Capping, Encoding,<br/>Scaling, Class-weighting] --> N7
 
