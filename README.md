@@ -1,6 +1,6 @@
 # PCOS Classification Using Machine Learning
 
-**A Systematic Study of Feature Engineering, Feature Selection, and Bayesian Hyperparameter Optimization for Polycystic Ovary Syndrome (PCOS) Prediction**
+**A Systematic Study of Feature Engineering and Bayesian Hyperparameter Optimization for Polycystic Ovary Syndrome (PCOS) Prediction**
 
 ![Python](https://img.shields.io/badge/python-3.9%2B-blue)
 ![Models](https://img.shields.io/badge/models-14%20classifiers-orange)
