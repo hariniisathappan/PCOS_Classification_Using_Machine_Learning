@@ -102,7 +102,7 @@ PCOS_Classification_Using_ML/
 
 - **Source:** Publicly available PCOS clinical dataset (Kaggle)
 - **Patients:** 541 total (177 PCOS-positive, 364 PCOS-negative)
-- **Raw features:** 41, spanning demographic, anthropometric, hormonal, metabolic, menstrual-history, ultrasound, and lifestyle variables.
+- **Raw features:** 44, spanning demographic, anthropometric, hormonal, metabolic, menstrual-history, ultrasound, and lifestyle variables.
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/784de37a-0f48-4d6f-891d-4e22bfdb653f" width="850" alt="PCOS Target Distribution and Class Percentage"/>
@@ -134,6 +134,7 @@ Applied identically across **all four experimental conditions** to ensure fair c
 4. **Scaling:** Standardization (zero mean, unit variance)
 5. **Class imbalance:** `class_weight="balanced"` + Stratified 10-fold CV (SMOTE intentionally avoided — moderate 2:1 imbalance + leakage risk)
 
+> **Note on feature count:** The raw dataset actually contains 44 columns. Two are identifier columns (`Sl. No`, `Patient File No.`) that carry no predictive information and were dropped during preprocessing. One more column is the target variable itself (`PCOS (Y/N)`). That leaves **41 actual input features** used for training — the number referenced throughout this README.
 ---
 
 ## 🧪 Feature Engineering & Selection (Notebook 07)
