@@ -417,10 +417,10 @@ quadrantChart
     title Four Archetype Framework
     x-axis Low FE Sensitivity --> High FE Sensitivity
     y-axis Low Tuning Sensitivity --> High Tuning Sensitivity
-    quadrant-1 Archetype 1: Bimodal Sensitivity
-    quadrant-2 Archetype 3: Algorithmic Robustness
-    quadrant-3 Archetype 2: Structural Rigidity
-    quadrant-4 Archetype 4: Default Optimality
+    quadrant-1 Archetype 1 Bimodal Sensitivity
+    quadrant-2 Archetype 3 Algorithmic Robustness
+    quadrant-3 Archetype 2 Structural Rigidity
+    quadrant-4 Archetype 4 Default Optimality
     SVM: [0.85, 0.85]
     Perceptron: [0.9, 0.6]
     LDA: [0.6, 0.5]
@@ -432,7 +432,7 @@ quadrantChart
     Gradient Boosting: [0.15, 0.65]
     AdaBoost: [0.1, 0.2]
     Random Forest: [0.1, 0.15]
-    Bagging: [0.15, 0.2]
+    Bagging: [0.15, 0.25]
     Stacking ML: [0.15, 0.25]
     Logistic Regression: [0.3, 0.9]
 ```
@@ -476,6 +476,7 @@ pip install -r requirements.txt
 
 Run notebooks in this order for full reproducibility:
 
+```bash
 01_data_exploration.ipynb
 02_preprocessing_pipeline.ipynb
 07_FE_and_FS.ipynb
