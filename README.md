@@ -561,7 +561,6 @@ Run notebooks in this order for full reproducibility:
 - Rotterdam-criteria-based **Feature Engineering** improves mean F1 across both baseline (+2.3%) and tuned (+3.1%) pipelines, while raising the **EPV ratio from 4.31 to 16.09**.
 - **AdaBoost** is the strongest baseline (default) model; **SVM (RBF)** is the strongest model once Bayesian-tuned with engineered features.
 - **Logistic Regression** is remarkably consistent across all four conditions and offers the best-calibrated probability outputs (Brier = 0.069).
-- Feature engineering also reduces **training/optimization time by up to 66%** for some models.
 - Learning curves show that **most models have not yet plateaued** — more clinical data (~46% more patients) would likely improve robustness further.
 
 ---
@@ -569,7 +568,7 @@ Run notebooks in this order for full reproducibility:
 ## 👩‍💻 Author
 
 **Harinii S** — School of Chemical and Biotechnology, Division of Bioinformatics, SASTRA Deemed to be University, Thanjavur
-
+-B.Tech-Bioinformatics (Hons), Minor Specialization in AI/ML.
 ---
 
 ## 📄 License
