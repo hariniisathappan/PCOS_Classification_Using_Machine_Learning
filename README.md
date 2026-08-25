@@ -16,7 +16,7 @@ This repository documents an end-to-end ML pipeline for PCOS prediction on a **5
 
 ---
 
-## 🗂️ Notebook Pipeline (Actual Execution Order)
+## 🗂️ Notebook Pipeline 
 
 ```mermaid
 flowchart TD
@@ -137,7 +137,7 @@ Applied identically across **all four experimental conditions** to ensure fair c
 > **Note on feature count:** The raw dataset actually contains 44 columns. Two are identifier columns (`Sl. No`, `Patient File No.`) that carry no predictive information and were dropped during preprocessing. One more column is the target variable itself (`PCOS (Y/N)`). That leaves **41 actual input features** used for training — the number referenced throughout this README.
 ---
 
-## 🧪 Feature Engineering & Selection (Notebook 07)
+## 🧪 Feature Engineering & Selection
 
 ### Rotterdam-Criteria-Based Engineered Features
 
@@ -568,7 +568,7 @@ Run notebooks in this order for full reproducibility:
 
 ## 👩‍💻 Author
 
-**Harini S** — Division of Bioinformatics, SASTRA Deemed University, Thanjavur
+**Harinii S** — School of Chemical and Biotechnology, Division of Bioinformatics, SASTRA Deemed to be University, Thanjavur
 
 ---
 
