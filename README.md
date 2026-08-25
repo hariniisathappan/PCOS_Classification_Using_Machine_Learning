@@ -1,10 +1,10 @@
-# 🩺 PCOS Classification Using Machine Learning
+# PCOS Classification Using Machine Learning
 
 **A Systematic Study of Feature Engineering, Feature Selection, and Bayesian Hyperparameter Optimization for Polycystic Ovary Syndrome (PCOS) Prediction**
 
-
 ![Python](https://img.shields.io/badge/python-3.9%2B-blue)
 ![Models](https://img.shields.io/badge/models-14%20classifiers-orange)
+![License](https://img.shields.io/badge/license-MIT-green)
 
 ---
 
@@ -14,15 +14,15 @@ Polycystic Ovary Syndrome (**PCOS**) is the most common endocrine disorder in wo
 
 This repository documents an end-to-end ML pipeline for PCOS prediction on a **541-patient clinical dataset (41 raw features)**, evaluating **14 classifiers across 9 algorithm families** under **4 experimental conditions**: Baseline vs. Bayesian-Tuned, each With vs. Without Feature Engineering.
 
+> **Note:** The `outputs/` folder (raw per-model artifacts — hundreds of files) is intentionally excluded from this repo to keep it lightweight. Every key chart, table, and metric is reproduced directly in this README instead.
+
 ---
 
 ## 🗂️ Notebook Pipeline (Actual Execution Order)
 
-This is the real, end-to-end workflow exactly as implemented in `/notebooks`:
-
 ```mermaid
 flowchart TD
-    N1[01_data_exploration.ipynb<br/>EDA on 541-patient, 44-feature dataset] --> N2
+    N1[01_data_exploration.ipynb<br/>EDA on 541-patient, 41-feature dataset] --> N2
 
     N2[02_preprocessing_pipeline.ipynb<br/>Imputation, Outlier Capping, Encoding,<br/>Scaling, Class-weighting] --> N7
 
@@ -72,17 +72,16 @@ flowchart TD
 | Cross-validation | Stratified 10-fold |
 | **Best Baseline Model** | AdaBoost (F1 = 0.845, with FE) |
 | **Best Baseline Recall** | Logistic Regression (Recall = 88.7%, with FE) |
-| **Best Tuned Model** | SVM (RBF kernel) — F1 = 0.8807, Recall = 90.6% |
+| **Best Tuned Model (overall)** | SVM (RBF kernel) — F1 = 0.8807, Recall = 90.6% |
 | **Best Calibrated Model** | Logistic Regression — Brier Score = 0.069 |
 
 ---
 
 ## 📁 Repository Structure
-
-PCOS_Classification_Using_Machine_Learning/
+PCOS_Classification_Using_ML/
 │
 ├── data/ # Raw and processed datasets
-├── models/ # Saved trained model artifacts (.pkl)
+├── models/ # Saved trained model artifacts (.joblib)
 ├── notebooks/
 │ ├── 01_data_exploration.ipynb
 │ ├── 02_preprocessing_pipeline.ipynb
@@ -98,29 +97,33 @@ PCOS_Classification_Using_Machine_Learning/
 ├── .gitignore
 └── README.md
 
+*(`outputs/` is generated locally when you run the notebooks — see .gitignore)*
 
 ---
 
-## 🧬 Dataset Description
+## 🧬 Dataset Description & Exploratory Analysis (Notebook 01)
 
 - **Source:** Publicly available PCOS clinical dataset (Kaggle)
 - **Patients:** 541 total (177 PCOS-positive, 364 PCOS-negative)
-- **Raw features:** 41, spanning:
-  - Demographic (age)
-  - Anthropometric (BMI, weight, height, waist/hip ratio)
-  - Hormonal (LH, FSH, AMH, TSH, PRL, testosterone, etc.)
-  - Metabolic (fasting insulin, blood glucose)
-  - Menstrual history (cycle length, cycle regularity)
-  - Ultrasound findings (follicle count left/right, endometrial thickness)
-  - Lifestyle/behavioral (smoking, alcohol use)
+- **Raw features:** 41, spanning demographic, anthropometric, hormonal, metabolic, menstrual-history, ultrasound, and lifestyle variables.
 
-### Class Distribution
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/784de37a-0f48-4d6f-891d-4e22bfdb653f" width="850" alt="PCOS Target Distribution and Class Percentage"/>
+</p>
 
-```mermaid
-pie title Class Distribution (n = 541)
-    "PCOS Negative (364)" : 364
-    "PCOS Positive (177)" : 177
-```
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/9fde2582-2448-48ad-a84b-a19b02a80171" width="850" alt="Correlation Heatmap of all 41 features"/>
+</p>
+
+**Follicle count** (right and left ovary) was consistently the strongest visual separator between PCOS-positive and PCOS-negative patients:
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/54dd9602-2dea-481c-bf8d-c48db2c19a65" width="850" alt="Follicle No. Right - Distribution and Boxplot by PCOS Status"/>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/8e256225-794b-485d-a23e-3263eecde62e" width="850" alt="Follicle No. Left - Distribution and Boxplot by PCOS Status"/>
+</p>
 
 ---
 
@@ -140,8 +143,6 @@ Applied identically across **all four experimental conditions** to ensure fair c
 
 ### Rotterdam-Criteria-Based Engineered Features
 
-Per the **Rotterdam diagnostic criteria** (2 of 3: oligo-anovulation, hyperandrogenism, polycystic ovarian morphology), **7 clinically-derived features** were engineered from the 41 raw variables:
-
 | # | Engineered Feature | Clinical Rationale |
 |---|---|---|
 | 1 | **LH/FSH Ratio** | Elevated ratio is a known PCOS hormonal biomarker |
@@ -154,13 +155,9 @@ Per the **Rotterdam diagnostic criteria** (2 of 3: oligo-anovulation, hyperandro
 
 ### 3-Method Voting Feature Selection
 
-A feature was retained only if selected by **≥ 2 of 3** independent statistical tests:
+A feature was retained only if selected by **≥ 2 of 3** independent statistical tests: Pearson/Spearman correlation, Chi-square, Mutual information.
 
-1. Pearson/Spearman correlation with target (p < 0.05)
-2. Chi-square test of association
-3. Mutual information threshold
-
-**Result:** Of the 41 raw + 7 engineered candidates, only **Follicle Asymmetry** passed among the engineered set (the other 6 were redundant with raw features already selected). Final feature set = **10 raw + 1 engineered = 11 predictors**.
+**Result:** Of the 41 raw + 7 engineered candidates, only **Follicle Asymmetry** passed among the engineered set. Final feature set = **10 raw + 1 engineered = 11 predictors**.
 
 ### Events-Per-Variable (EPV) Justification
 
@@ -170,8 +167,6 @@ $$
 $$
 EPV_{engineered} = \frac{177}{11} = 16.09 \quad (\text{satisfies EPV} \geq 10)
 $$
-
-Reducing dimensionality is therefore not just a performance optimization — it is a **statistical validity requirement** for parametric models on this cohort.
 
 ---
 
@@ -194,7 +189,7 @@ Reducing dimensionality is therefore not just a performance optimization — it 
 # 📊 PIPELINE 1: Baseline Models (Default Hyperparameters)
 
 ## 1a. Baseline — WITHOUT Feature Engineering (41 raw features)
-*(Notebook 05: `05_without_FE_baseline.ipynb`)*
+*(Notebook 05)*
 
 | Model | Family | Accuracy | Precision | Recall | F1-Score | AUC-ROC |
 |---|---|---|---|---|---|---|
@@ -215,20 +210,26 @@ Reducing dimensionality is therefore not just a performance optimization — it 
 
 **Mean F1 (Baseline, Without FE): 0.799**
 
-**AdaBoost Confusion Matrix** — Accuracy 89.57%, Sensitivity 81.13%, Specificity 93.64%, AUC 0.9487
+**AdaBoost — 10-Fold Stratified CV, Confusion Matrix & ROC Curve:**
 
-| | Predicted: No | Predicted: Yes |
-|---|---|---|
-| **Actual: No** | 103 | 7 |
-| **Actual: Yes** | 10 | 43 |
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b2805255-6816-4689-95f6-e708c2350e5c" width="800" alt="AdaBoost Baseline Without FE - 10-Fold Stratified CV"/>
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a4ae68fd-5716-4bea-92f2-6fabece1f442" width="420" alt="AdaBoost Baseline Without FE - Confusion Matrix"/>
+  <img src="https://github.com/user-attachments/assets/a21b27f0-c555-4397-9315-21f3adeecd11" width="420" alt="AdaBoost Baseline Without FE - ROC Curve"/>
+</p>
 
-`![AdaBoost Confusion Matrix - Baseline No FE](models/adaboost_baseline_nofe_cm.png)`
-`![AdaBoost ROC Curve - Baseline No FE](models/adaboost_baseline_nofe_roc.png)`
+**Feature Importances (AdaBoost, Without FE):**
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/2badcdc5-38bb-4120-89af-a7b99904ccfa" width="600" alt="AdaBoost Baseline Without FE - Feature Importances"/>
+</p>
 
 ---
 
 ## 1b. Baseline — WITH Feature Engineering (11 selected features)
-*(Notebook 03: `03_with_FE_Baseline.ipynb`)*
+*(Notebook 03)*
 
 | Model | Family | Accuracy | Precision | Recall | F1-Score | AUC-ROC |
 |---|---|---|---|---|---|---|
@@ -249,22 +250,21 @@ Reducing dimensionality is therefore not just a performance optimization — it 
 
 **Mean F1 (Baseline, With FE): 0.817** → **+2.3% absolute improvement over 1a**
 
-**Logistic Regression Confusion Matrix** — Accuracy 90.80%, Sensitivity 88.68%, Specificity 91.82%, AUC 0.9365
+**Logistic Regression — 10-Fold Stratified CV, Confusion Matrix & ROC Curve:**
 
-| | Predicted: No | Predicted: Yes |
-|---|---|---|
-| **Actual: No** | 101 | 9 |
-| **Actual: Yes** | 6 | 47 |
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/16eb1009-01ab-49c5-8592-1e954df84e34" width="800" alt="Logistic Regression Baseline With FE - 10-Fold Stratified CV"/>
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/9559891e-164c-4062-8a48-92f6f2829281" width="420" alt="Logistic Regression Baseline With FE - Confusion Matrix"/>
+  <img src="https://github.com/user-attachments/assets/4bb4d35c-b9f3-41c5-a0d3-94b19eb235b3" width="420" alt="Logistic Regression Baseline With FE - ROC Curve"/>
+</p>
 
-**AdaBoost Confusion Matrix** — Accuracy 90.80%, Precision 93.18% (highest), AUC 0.9487
+**Feature Importances (Logistic Regression, With FE — 11 features):**
 
-| | Predicted: No | Predicted: Yes |
-|---|---|---|
-| **Actual: No** | 107 | 3 |
-| **Actual: Yes** | 12 | 41 |
-
-`![Logistic Regression Confusion Matrix - Baseline FE](models/lr_baseline_fe_cm.png)`
-`![AdaBoost Confusion Matrix - Baseline FE](models/adaboost_baseline_fe_cm.png)`
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a64204a2-877a-4155-8d6d-a1e5b23853f9" width="700" alt="Logistic Regression Baseline With FE - Feature Importances"/>
+</p>
 
 ### 🔑 Pipeline 1 Takeaway
 - **AdaBoost** → best precision & overall F1 without FE; stays strong with FE.
@@ -278,7 +278,7 @@ Reducing dimensionality is therefore not just a performance optimization — it 
 All 14 classifiers optimized using **Optuna's Tree-structured Parzen Estimator (TPE)**, 100 trials/model, optimizing stratified 10-fold CV F1-score.
 
 ## 2a. Tuned — WITHOUT Feature Engineering (41 raw features)
-*(Notebook 06: `06_without_FE_Tuned.ipynb`)*
+*(Notebook 06)*
 
 | Model | Accuracy | Precision | Recall | F1 | AUC-ROC |
 |---|---|---|---|---|---|
@@ -297,20 +297,34 @@ All 14 classifiers optimized using **Optuna's Tree-structured Parzen Estimator (
 | Gaussian Naïve Bayes | 0.8037 | 0.6364 | 0.9245 | 0.7538 | 0.8789 |
 | QDA | 0.8466 | 0.7500 | 0.7925 | 0.7706 | 0.9038 |
 
-**Logistic Regression Confusion Matrix** — highest precision (97.6%) via L1-induced sparsity acting like implicit feature selection
+**Logistic Regression — Confusion Matrix, 10-Fold CV & ROC Curve** (highest precision, 97.6%, via L1-induced sparsity acting like implicit feature selection):
 
-| | Predicted: No | Predicted: Yes |
-|---|---|---|
-| **Actual: No** | 109 | 1 |
-| **Actual: Yes** | 12 | 41 |
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d72379dd-ec75-4762-9285-5b7da60228f3" width="420" alt="Logistic Regression Tuned Without FE - Confusion Matrix"/>
+  <img src="https://github.com/user-attachments/assets/765e199e-7b1a-4550-a4ff-0ea425137d0f" width="420" alt="Logistic Regression Tuned Without FE - ROC Curve (AUC 0.9612)"/>
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/7abc8500-7e9c-4558-9677-f8653e5dfe72" width="800" alt="Logistic Regression Tuned Without FE - 10-Fold Stratified CV"/>
+</p>
 
-`![Logistic Regression ROC Curve - Tuned No FE](models/lr_tuned_nofe_roc.png)`
-`![Logistic Regression Confusion Matrix - Tuned No FE](models/lr_tuned_nofe_cm.png)`
+**Optuna Bayesian Hyperparameter Search (Logistic Regression, Without FE):**
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/bc4bd594-1ff2-4539-aeaf-957a5451db9d" width="380" alt="CV Score vs tol"/>
+  <img src="https://github.com/user-attachments/assets/92625bb6-a132-438d-b12b-4e8e521f8f0a" width="380" alt="CV Score vs C"/>
+  <img src="https://github.com/user-attachments/assets/7d34de38-c78e-4ec6-afcb-2b080c06b5d6" width="380" alt="CV Score vs penalty"/>
+</p>
+
+**Feature Importances (Logistic Regression, Tuned Without FE):**
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/0f985fdc-a795-434a-a9a9-9358366d3380" width="700" alt="Logistic Regression Tuned Without FE - Feature Importances"/>
+</p>
 
 ---
 
 ## 2b. Tuned — WITH Feature Engineering (11 selected features)
-*(Notebook 04: `04_with_FE_Tuned.ipynb`)*
+*(Notebook 04)*
 
 | Model | Accuracy | Precision | Recall | F1 | AUC-ROC |
 |---|---|---|---|---|---|
@@ -329,15 +343,28 @@ All 14 classifiers optimized using **Optuna's Tree-structured Parzen Estimator (
 | Gaussian Naïve Bayes | 0.8773 | 0.9231 | 0.6792 | 0.7826 | 0.9516 |
 | QDA | 0.9018 | 0.8491 | 0.8491 | 0.8491 | 0.9475 |
 
-**SVM Confusion Matrix** — **Best overall model** — Accuracy 92.0%, Recall 90.6%, AUC 0.9492
+**SVM (RBF) — Best overall model — Confusion Matrix, 10-Fold CV & ROC Curve:**
 
-| | Predicted: No | Predicted: Yes |
-|---|---|---|
-| **Actual: No** | 102 | 8 |
-| **Actual: Yes** | 5 | 48 |
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/501e9a69-90c2-428d-b242-ae46a499aeb8" width="420" alt="SVM Tuned With FE - Confusion Matrix"/>
+  <img src="https://github.com/user-attachments/assets/efb0e149-753c-4718-a600-2d110fe95291" width="420" alt="SVM Tuned With FE - ROC Curve"/>
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/06f97001-e0ff-463e-b6b7-339b8b7483f6" width="800" alt="SVM Tuned With FE - 10-Fold Stratified CV"/>
+</p>
 
-`![SVM ROC Curve - Tuned FE](models/svm_tuned_fe_roc.png)`
-`![SVM Confusion Matrix - Tuned FE](models/svm_tuned_fe_cm.png)`
+**Optuna Bayesian Hyperparameter Search (SVM, With FE):**
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ccd08fd5-bf70-45dc-a7bc-e292ac0f660e" width="420" alt="CV Score vs kernel"/>
+  <img src="https://github.com/user-attachments/assets/d6789e98-d445-40c9-b6b6-1ccbef657e7e" width="420" alt="CV Score vs C"/>
+</p>
+
+**Feature Importances (SVM, Tuned With FE):**
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/2cdb6f74-387e-465b-80eb-6b76848dc01c" width="600" alt="SVM Tuned With FE - Feature Importances"/>
+</p>
 
 ### 🔑 Pipeline 2 Takeaway
 - **Without FE:** Logistic Regression dominates (F1 = 0.8632) — L1 penalty (C=0.111) internally mimics feature selection on the 41-feature space.
@@ -363,6 +390,18 @@ xychart-beta
     bar [0.799, 0.817, 0.808, 0.833]
 ```
 
+**ROC-AUC across all 4 experiments, per model:**
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/2ff6c0cc-84bd-45a5-9091-968e98badd96" width="900" alt="ROC-AUC - All 4 Experiments per Model"/>
+</p>
+
+**Combined ROC curves — all 14 models, baseline configurations:**
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/db1c1db0-38e7-4047-830e-ee39f80772d7" width="650" alt="ROC Curves - All Baseline Model Configurations"/>
+</p>
+
 ---
 
 ## ⏱️ Training Time & Optimization Cost (Notebook 08)
@@ -376,9 +415,22 @@ Reducing the feature space from 41 → 11 substantially cut computational cost d
 | Bagging Classifier | High | Reduced | **−27%** |
 | SVM | Low (best F1/time tradeoff) | Fastest, highest F1 (0.8807) | Best overall efficiency |
 
-**Key finding:** Feature engineering doesn't just improve accuracy — it makes the **entire Bayesian AutoML search meaningfully cheaper**, since matrix operations (kernel calculations in SVM, covariance estimation in LDA/QDA, split-finding in trees) scale with feature count. SVM had the best F1-to-training-time tradeoff, reaching the top F1-score of 0.8807 in a matter of seconds, while tree-based ensembles required significantly longer training times.
+**Key finding:** Feature engineering doesn't just improve accuracy — it makes the **entire Bayesian AutoML search meaningfully cheaper**, since matrix operations (kernel calculations in SVM, covariance estimation in LDA/QDA, split-finding in trees) scale with feature count.
 
-`![Training Time Comparison Chart](notebooks/08_Time_and_performance_files/training_time_comparison.png)`
+**Model performance vs. training data size, across all 14 models (both feature sets):**
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/fb013432-8751-4c6d-913a-76dc162053ce" width="850" alt="Without FE - All Models F1 Score vs Training Data Size"/>
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/645433ee-fe22-4b3e-8290-ff15ea0220ad" width="850" alt="With FE - All Models ROC-AUC vs Training Data Size"/>
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d6053ffe-f74d-4a6b-994e-982882d0ad1c" width="850" alt="With FE - All Models F1 Score vs Training Data Size"/>
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/cbfc7184-6552-4534-a22a-57e9af9f2104" width="850" alt="Without FE - All Models ROC-AUC vs Training Data Size"/>
+</p>
 
 ---
 
@@ -386,18 +438,42 @@ Reducing the feature space from 41 → 11 substantially cut computational cost d
 
 Learning curves were plotted for all 14 classifiers to evaluate overfitting and generalization as training data size increased (10% → 100%).
 
-**Key findings:**
-
 | Observation | Detail |
 |---|---|
-| **Convergence** | Most classifiers (Logistic Regression, Gaussian NB, SVM, boosting ensembles) converged to a stable ~0.95 ROC-AUC beyond 50–60% of training data, with minimal overfitting |
-| **Decision Tree overfitting** | Training performance stuck at 1.00 F1/AUC, while test performance plateaued at only 0.76–0.86 — a clear overfitting signature, reinforcing why ensemble methods (Random Forest, Bagging, Boosting) are preferred over single trees |
-| **AdaBoost: FE vs No-FE stability** | Non-FE AdaBoost was *more stable* at full training data (F1 = 0.8257, AUC = 0.9400) vs. the FE-tuned version (F1 = 0.8155, AUC = 0.9504) — for lower training fractions (10–30%) the gap between the two shrank, suggesting FE mainly benefits **consistency/stability of results**, not necessarily peak (asymptotic) performance |
-| **Data sufficiency** | None of the 14 classifiers had clearly plateaued — the learning curves suggest an estimated **~248 additional patients (45.8% more data)** would likely be needed to reach a true performance plateau for most models |
+| **Convergence** | Most classifiers converged to a stable ~0.95 ROC-AUC beyond 50–60% of training data, with minimal overfitting |
+| **Decision Tree overfitting** | Training performance stuck at 1.00 F1/AUC, while test performance plateaued at only 0.76–0.86 |
+| **AdaBoost: FE vs No-FE stability** | Non-FE AdaBoost was *more stable* at full training data (F1 = 0.8257) vs. the FE-tuned version (F1 = 0.8155) — for lower training fractions (10–30%) the gap shrank, suggesting FE mainly benefits **consistency/stability**, not asymptotic performance |
+| **Data sufficiency** | None of the 14 classifiers had clearly plateaued — an estimated **~248 additional patients (45.8% more data)** would likely be needed to reach a true performance plateau |
 
-`![Learning Curve - F1 Score vs Training Size](notebooks/10_Learning_curve_files/f1_learning_curve.png)`
-`![Learning Curve - AUC-ROC vs Training Size](notebooks/10_Learning_curve_files/auc_learning_curve.png)`
-`![Decision Tree Overfitting Curve](notebooks/10_Learning_curve_files/decision_tree_overfit.png)`
+**SVM — Learning curves (Without FE, and With vs. Without FE comparison):**
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/1e9e7d99-0f73-4af7-beb4-04ac516a59a0" width="850" alt="SVM Learning Curve - Without FE"/>
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/655db017-3ecb-4a82-be00-141c6d6a2786" width="850" alt="SVM Learning Curve Comparison - With vs Without FE"/>
+</p>
+
+**Logistic Regression — Learning curves (With vs Without FE comparison, and Without FE standalone):**
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/8e7e3251-f279-419a-9553-09358eb3adf4" width="850" alt="Logistic Regression Learning Curve Comparison - With vs Without FE"/>
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/f537ccae-12ab-4584-8701-26eef05737ac" width="850" alt="Logistic Regression Learning Curve - Without FE"/>
+</p>
+
+**Overfitting analysis (Decision Tree — train vs. test divergence):**
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/73835454-6e39-45a7-81a0-9d78ddf9263d" width="750" alt="Overfitting Analysis - Decision Tree Train vs Test"/>
+</p>
+
+**Stratified 10-fold cross-validation strategy overview:**
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/6c0bdf7b-cfa7-42f1-9e47-024c6bbba98c" width="750" alt="Stratified 10-Fold Cross-Validation Overview"/>
+</p>
 
 ---
 
@@ -407,10 +483,10 @@ Derived by comparing model behavior across all 4 conditions (Baseline/Tuned × W
 
 | Archetype | Models | Description |
 |---|---|---|
-| **1. Bimodal Sensitivity** | SVM, Perceptron, LDA, QDA, Decision Tree | Strongly benefit from **both** FE and tuning — FE resolves dimensionality/collinearity issues (e.g., QDA's covariance matrix drops from ~1,681 to ~121 parameter estimates), tuning then unlocks discriminative power |
-| **2. Structural Rigidity** | Gaussian Naïve Bayes, KNN | Modest FE gains; Bayesian tuning often *underperforms* defaults — small search space, prone to overfitting |
-| **3. Algorithmic Robustness** | XGBoost, Gradient Boosting | Built-in regularization (L1/L2, subsampling) makes them largely insensitive to FE; they respond mainly to tuning |
-| **4. Default Optimality** | AdaBoost, Random Forest, Bagging, Stacking ML | Internal per-node/per-estimator feature selection makes external FE largely redundant; sometimes FE + tuning combined can even slightly hurt (e.g., Stacking ML AUC drops from 0.9580 → 0.9561) |
+| **1. Bimodal Sensitivity** | SVM, Perceptron, LDA, QDA, Decision Tree | Strongly benefit from **both** FE and tuning |
+| **2. Structural Rigidity** | Gaussian Naïve Bayes, KNN | Modest FE gains; Bayesian tuning often *underperforms* defaults |
+| **3. Algorithmic Robustness** | XGBoost, Gradient Boosting | Built-in regularization makes them largely insensitive to FE |
+| **4. Default Optimality** | AdaBoost, Random Forest, Bagging, Stacking ML | Internal per-node/per-estimator feature selection makes external FE largely redundant |
 
 ```mermaid
 quadrantChart
@@ -445,11 +521,16 @@ Applied to the best-performing tuned models to move beyond black-box classificat
 
 | Tool | Purpose |
 |---|---|
-| **SHAP** | Global feature importance — top predictors: Follicle No. (R/L), Hair growth, Weight gain, Skin darkening, AMH, Follicle Asymmetry |
-| **LIME** | Per-patient local explanation of individual predictions |
+| **SHAP / LIME** | Global & local feature importance — top predictors: Follicle No. (R/L), Hair growth, Weight gain, Skin darkening, AMH, Follicle Asymmetry |
 | **Calibration Curves** | Logistic Regression best calibrated (Brier Score = 0.069) |
 | **Decision Curve Analysis (DCA)** | Clinical net benefit across probability thresholds |
-| **Precision-Recall Curves** | Performance evaluation under class imbalance |
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/050ed09d-bc81-47eb-a980-f0003e0cf671" width="900" alt="Probability Calibration Curves - Risk Score Reliability"/>
+</p>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c27880cd-8051-42dc-9a5f-1f36ddd32f47" width="900" alt="Decision Curve Analysis - Clinical Net Diagnostic Utility"/>
+</p>
 
 ---
 
@@ -469,8 +550,8 @@ Applied to the best-performing tuned models to move beyond black-box classificat
 ## 🚀 Getting Started
 
 ```bash
-git clone https://github.com/hariniisathappan/PCOS_Classification_Using_Machine_Learning.git
-cd PCOS_Classification_Using_Machine_Learning
+git clone https://github.com/hariniisathappan/PCOS_Classification_Using_ML.git
+cd PCOS_Classification_Using_ML
 pip install -r requirements.txt
 ```
 
@@ -487,18 +568,17 @@ Run notebooks in this order for full reproducibility:
 08_Time_and_performance.ipynb
 09_Trainind_data_metrics.ipynb
 10_Learning_curve.ipynb
-
+```
 
 ---
 
 ## 🧠 Conclusion
 
-- Rotterdam-criteria-based **Feature Engineering** improves mean F1 across both baseline (+2.3%) and tuned (+3.1%) pipelines, while raising the **EPV ratio from 4.31 to 16.09**, satisfying statistical validity requirements for parametric modelling.
+- Rotterdam-criteria-based **Feature Engineering** improves mean F1 across both baseline (+2.3%) and tuned (+3.1%) pipelines, while raising the **EPV ratio from 4.31 to 16.09**.
 - **AdaBoost** is the strongest baseline (default) model; **SVM (RBF)** is the strongest model once Bayesian-tuned with engineered features.
-- **Logistic Regression** is remarkably consistent across all four conditions and offers the best-calibrated probability outputs (Brier = 0.069), ideal for clinical risk scoring.
-- Feature engineering also reduces **training/optimization time by up to 66%** for some models, since matrix operations scale with feature count.
+- **Logistic Regression** is remarkably consistent across all four conditions and offers the best-calibrated probability outputs (Brier = 0.069).
+- Feature engineering also reduces **training/optimization time by up to 66%** for some models.
 - Learning curves show that **most models have not yet plateaued** — more clinical data (~46% more patients) would likely improve robustness further.
-- The **Four Archetype Framework** explains *why* some models need FE + tuning together, while others are largely self-sufficient.
 
 ---
 
